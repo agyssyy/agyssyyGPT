@@ -1,0 +1,23 @@
+# AgyssyyGPT configuration (copy to ./agysyy.toml or ~/.config/agysyy/config.toml)
+
+# Which provider to use: "openai", "anthropic", or "ollama".
+# Leave unset to auto-detect from your environment.
+provider = "ollama"
+
+# Model name. Defaults per provider:
+#   openai    -> gpt-4o-mini
+#   anthropic -> claude-3-5-haiku-latest
+#   ollama    -> llama3.2
+model = "llama3.2"
+
+# Optional endpoint override.
+base_url = "http://localhost:11434"
+
+# Optional API key (prefer the provider env var, e.g. OPENAI_API_KEY).
+# api_key = ""
+
+# Optional system prompt.
+system = "You are AgyssyyGPT, a concise assistant that runs in a terminal."
+
+# Optional: append every completed chat to a JSONL dataset (for fine-tuning).
+# log = "logs/chats.jsonl"

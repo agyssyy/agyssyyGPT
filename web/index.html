@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>AgyssyyGPT — an AI chat that lives in your terminal</title>
+    <meta
+      name="description"
+      content="AgyssyyGPT (agys) is a terminal AI chat with pluggable providers: OpenAI, Anthropic, or local Ollama. Download the exe, an npm package, or the full source."
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128187;</text></svg>" />
+  </head>
+  <body>
+    <header class="hero">
+      <h1>AgyssyyGPT</h1>
+      <p class="tagline">An AI chat that lives in your terminal.</p>
+      <pre class="demo"><span class="prompt">$</span> agys "explain monads in one line"
+<span class="answer">agys&gt;</span> A monad is just a monoid in the category of endofunctors.</pre>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/agyssyy/agyssyygpt/releases/latest">Download for Windows</a>
+        <a class="btn" href="https://www.npmjs.com/package/agyssyy">npm install -g agyssyy</a>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <h2>Pluggable providers</h2>
+        <p>Bring your own model. AgyssyyGPT picks a sensible default and lets you override everything.</p>
+        <div class="grid">
+          <div class="card"><h3>OpenAI</h3><p><code>OPENAI_API_KEY</code></p></div>
+          <div class="card"><h3>Anthropic</h3><p><code>ANTHROPIC_API_KEY</code></p></div>
+          <div class="card"><h3>Ollama</h3><p>Local models, no key required</p></div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Download every package</h2>
+        <p>
+          The full set of platform packages, checksums, and changelogs lives on
+          <a href="https://github.com/agyssyy/agyssyygpt/releases">GitHub Releases</a> —
+          the single source of truth. The website and npm mirror those artifacts.
+        </p>
+        <ul class="downloads">
+          <li><a href="https://github.com/agyssyy/agyssyygpt/releases/latest">Windows (agyssyy.exe)</a></li>
+          <li><a href="https://github.com/agyssyy/agyssyygpt/releases/latest">macOS</a></li>
+          <li><a href="https://github.com/agyssyy/agyssyygpt/releases/latest">Linux</a></li>
+          <li><a href="https://github.com/agyssyy/agyssyygpt/releases/latest">Checksums (.sha256)</a></li>
+          <li><a href="https://www.npmjs.com/package/agyssyy">npm (agyssyy)</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Get started</h2>
+        <pre class="code">npm install -g agyssyy
+
+agys                          <span class="c"># interactive chat</span>
+agys "explain monads"         <span class="c"># one-shot</span>
+agys -p ollama -m llama3.2    <span class="c"># local model</span>
+agys -p openai -m gpt-4o-mini <span class="c"># OpenAI</span></pre>
+      </section>
+    </main>
+
+    <footer>
+      <p>
+        MIT licensed ·
+        <a href="https://github.com/agyssyy/agyssyygpt">GitHub</a> ·
+        <a href="https://github.com/agyssyy/agyssyygpt/releases">Releases</a> ·
+        <a href="https://www.npmjs.com/package/agyssyy">npm</a>
+      </p>
+    </footer>
+  </body>
+</html>

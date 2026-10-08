@@ -1,0 +1,35 @@
+{
+  "name": "agyssyygpt-app",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AgyssyyGPT CLI source. Builds the agyssyy(.exe) binary shipped through npm, the website, and GitHub Releases.",
+  "type": "module",
+  "bin": {
+    "agys": "dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsup",
+    "build:exe": "node ../scripts/build-exe.mjs",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

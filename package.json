@@ -1,0 +1,28 @@
+{
+  "name": "agyssyygpt",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AgyssyyGPT - an AI chat that lives in your terminal. Source, packaging, and distribution.",
+  "homepage": "https://agyssyy.github.io/agyssyygpt",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agyssyy/agyssyygpt.git"
+  },
+  "license": "MIT",
+  "workspaces": [
+    "app",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm run build -w app",
+    "build:exe": "node scripts/build-exe.mjs",
+    "package:npm": "node scripts/package-npm.mjs",
+    "package:npm:pack": "node scripts/package-npm.mjs --pack",
+    "typecheck": "npm run typecheck -w app",
+    "test": "npm run test -w app",
+    "dev": "npm run dev -w app"
+  }
+}

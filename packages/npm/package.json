@@ -1,0 +1,38 @@
+{
+  "name": "agyssyy",
+  "version": "0.1.0",
+  "description": "AgyssyyGPT - an AI chat that lives in your terminal. Ships the prebuilt agyssyy.exe launcher for Windows.",
+  "bin": {
+    "agys": "agyssyy.exe"
+  },
+  "files": [
+    "agyssyy.exe",
+    "README.md"
+  ],
+  "os": [
+    "win32"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "homepage": "https://agyssyy.github.io/agyssyygpt",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agyssyy/agyssyygpt.git"
+  },
+  "bugs": {
+    "url": "https://github.com/agyssyy/agyssyygpt/issues"
+  },
+  "keywords": [
+    "ai",
+    "cli",
+    "terminal",
+    "chat",
+    "llm",
+    "gpt",
+    "openai",
+    "anthropic",
+    "ollama"
+  ],
+  "license": "MIT"
+}

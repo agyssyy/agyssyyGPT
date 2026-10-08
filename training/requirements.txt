@@ -1,0 +1,11 @@
+# Fine-tuning dependencies for AgyssyyGPT.
+# Install in a GPU environment (Kaggle / Colab / local CUDA):
+#   pip install -r requirements.txt
+torch>=2.2
+transformers>=4.44
+peft>=0.12
+datasets>=2.20
+accelerate>=0.33
+sentencepiece>=0.2
+huggingface_hub>=0.24
+bitsandbytes>=0.43 ; sys_platform == "linux"

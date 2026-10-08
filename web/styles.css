@@ -1,0 +1,167 @@
+:root {
+  --bg: #0b0f14;
+  --panel: #121922;
+  --border: #1e2a38;
+  --text: #e6edf3;
+  --muted: #8b98a5;
+  --accent: #4ee1a0;
+  --accent-2: #58a6ff;
+  --code: #0d1117;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--accent-2);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.hero,
+main,
+footer {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem;
+}
+
+.hero {
+  text-align: center;
+  padding-top: 4rem;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  margin: 0;
+  letter-spacing: -0.03em;
+}
+
+h1::after {
+  content: "_";
+  color: var(--accent);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 1.15rem;
+}
+
+.demo,
+.code {
+  background: var(--code);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  text-align: left;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+
+.prompt,
+.answer {
+  color: var(--accent);
+}
+
+.c,
+.code .c {
+  color: var(--muted);
+}
+
+.cta {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1.5rem 0;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.65rem 1.1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  background: var(--panel);
+}
+
+.btn.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #04110b;
+  font-weight: 700;
+}
+
+.btn:hover {
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+section {
+  padding: 2rem 0;
+  border-top: 1px solid var(--border);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.card h3 {
+  margin: 0 0 0.35rem;
+}
+
+.downloads {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.downloads li::before {
+  content: "> ";
+  color: var(--accent);
+}
+
+code {
+  background: var(--code);
+  padding: 0.1rem 0.35rem;
+  border-radius: 5px;
+}
+
+footer {
+  color: var(--muted);
+  text-align: center;
+  border-top: 1px solid var(--border);
+}

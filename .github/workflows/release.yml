@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: full packages + npm
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
+      - name: Build agyssyy.exe
+        run: node scripts/build-exe.mjs
+        continue-on-error: true
+
+      - name: Collect release artifacts
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path artifacts | Out-Null
+          if (Test-Path dist-exe/agyssyy.exe) {
+            Copy-Item dist-exe/agyssyy.exe artifacts/
+            $hash = (Get-FileHash dist-exe/agyssyy.exe -Algorithm SHA256).Hash.ToLower()
+            "$hash  agyssyy.exe" | Set-Content artifacts/agyssyy.exe.sha256
+          }
+          Copy-Item README.md artifacts/README.md
+          Copy-Item CHANGELOG.md artifacts/CHANGELOG.md
+
+      - name: Create GitHub Release (full packages)
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          fail_on_unmatched_files: false
+          files: artifacts/*
+
+      - name: Assemble npm package (exe + README only)
+        if: ${{ hashFiles('dist-exe/agyssyy.exe') != '' }}
+        run: node scripts/package-npm.mjs
+
+      - name: Publish to npm
+        if: ${{ hashFiles('dist-exe/agyssyy.exe') != '' && secrets.NPM_TOKEN != '' }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish packages/npm --access public
