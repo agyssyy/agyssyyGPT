@@ -12,6 +12,8 @@ jobs:
   release:
     name: full packages + npm
     runs-on: windows-latest
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,7 +55,7 @@ jobs:
         run: node scripts/package-npm.mjs
 
       - name: Publish to npm
-        if: ${{ hashFiles('dist-exe/agyssyy.exe') != '' && secrets.NPM_TOKEN != '' }}
+        if: ${{ hashFiles('dist-exe/agyssyy.exe') != '' && env.NPM_TOKEN != '' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish packages/npm --access public
