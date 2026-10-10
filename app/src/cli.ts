@@ -1,5 +1,5 @@
-import { createRequire } from "node:module";
 import { parseArgs } from "node:util";
+import pkg from "../package.json" with { type: "json" };
 import { resolveConfig } from "./config.js";
 import { DatasetLogger } from "./logger.js";
 import { createProvider } from "./providers/index.js";
@@ -7,8 +7,6 @@ import type { Message } from "./providers/types.js";
 import { ProviderError } from "./providers/types.js";
 import { startRepl } from "./repl.js";
 
-const require = createRequire(import.meta.url);
-const pkg = require("../package.json") as { version: string };
 export const version: string = pkg.version;
 
 const useColor = Boolean(process.stdout.isTTY) && !process.env.NO_COLOR;

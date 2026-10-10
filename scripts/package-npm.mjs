@@ -33,5 +33,12 @@ console.log(`[package-npm] copied ${source} -> ${target}`);
 const mode = process.argv.includes("--publish") ? "publish" : process.argv.includes("--pack") ? "pack" : null;
 if (mode) {
   const args = mode === "publish" ? ["publish", "--access", "public"] : ["pack"];
-  execFileSync("npm", args, { cwd: pkgDir, stdio: "inherit", shell: process.platform === "win32" });
+  if (process.platform === "win32") {
+    execFileSync("cmd.exe", ["/d", "/c", "npm " + args.join(" ")], {
+      cwd: pkgDir,
+      stdio: "inherit",
+    });
+  } else {
+    execFileSync("npm", args, { cwd: pkgDir, stdio: "inherit" });
+  }
 }

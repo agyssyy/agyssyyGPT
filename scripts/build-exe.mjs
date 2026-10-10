@@ -1,82 +1,91 @@
 #!/usr/bin/env node
 /**
- * Builds a standalone Windows executable (agyssyy.exe) from the AgyssyyGPT CLI
- * using Node's single-executable-application (SEA) support.
+ * Build a standalone Windows executable (agyssyy.exe) from the AgyssyyGPT CLI using
+ * Node's single-executable-application (SEA) support.
  *
- * Prerequisites (Windows, x64/arm64):
- *   - Node.js >= 20 (the same major used to run this script)
- *   - `postject` available (npx downloads it on demand)
+ * Pipeline (validated on Node 24 + Windows):
+ *   1. esbuild bundles src/bin.ts -> a single CommonJS file (SEA needs CJS)
+ *   2. `node --experimental-sea-config` generates the SEA blob
+ *   3. a copy of the Node runtime becomes agyssyy.exe
+ *   4. postject injects the blob into that copy
  *
- * This is intentionally best-effort: if the toolchain is unavailable the script
- * exits non-zero with instructions instead of leaving a broken binary behind.
- *
- * Usage: node scripts/build-exe.mjs [outputPath]
+ * Usage: node scripts/build-exe.mjs [outputDir]   (default: ./dist-exe)
  */
 import { execFileSync } from "node:child_process";
 import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { build } from "esbuild";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const app = join(root, "app");
-const outFile = resolve(process.argv[2] ?? join(root, "dist-exe", "agyssyy.exe"));
-const work = join(root, "dist-exe", ".sea");
+const outDir = resolve(process.argv[2] ?? join(root, "dist-exe"));
+const outFile = join(outDir, "agyssyy.exe");
+const work = join(outDir, ".sea");
+const bundleFile = join(outDir, "bundle", "cli.js");
+const seaConfig = join(outDir, "sea-config.json");
 const FUSE = "NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2";
 
-function run(command, args, cwd = root) {
-  execFileSync(command, args, { cwd, stdio: "inherit", shell: process.platform === "win32" });
-}
-
-function fail(message) {
-  process.stderr.write(`\n[build-exe] ${message}\n`);
+if (process.platform !== "win32") {
+  process.stderr.write(
+    "[build-exe] agyssyy.exe is a Windows binary. Run this on Windows (or a Windows CI runner).\n",
+  );
   process.exit(1);
 }
 
-if (process.platform !== "win32") {
-  fail("agyssyy.exe is a Windows binary. Run this on Windows (or in a Windows CI runner).");
-}
-
-console.log("[build-exe] 1/5 building the CLI bundle");
-run("npm", ["run", "build"], app);
-
-if (!existsSync(join(app, "dist", "cli.js"))) {
-  fail("app/dist/cli.js was not produced. Check the app build output.");
-}
+console.log("[build-exe] 1/5 bundling the CLI to CJS");
+await build({
+  entryPoints: [join(app, "src", "bin.ts")],
+  bundle: true,
+  platform: "node",
+  target: "node20",
+  format: "cjs",
+  banner: { js: "#!/usr/bin/env node" },
+  outfile: bundleFile,
+});
 
 console.log("[build-exe] 2/5 writing SEA config");
 rmSync(work, { recursive: true, force: true });
 mkdirSync(work, { recursive: true });
-
-const seaConfig = join(work, "sea-config.json");
 writeFileSync(
   seaConfig,
-  JSON.stringify(
-    {
-      main: join(app, "dist", "cli.js"),
-      output: join(work, "sea-prep.blob"),
-      disableExperimentalSEAWarning: true,
-    },
-    null,
-    2,
-  ),
+  JSON.stringify({
+    main: "bundle/cli.js",
+    output: ".sea/sea-prep.blob",
+    disableExperimentalSEAWarning: true,
+  }),
 );
 
 console.log("[build-exe] 3/5 generating the SEA blob");
-run(process.execPath, ["--experimental-sea-config", seaConfig], work);
+execFileSync(process.execPath, ["--experimental-sea-config", seaConfig], {
+  cwd: outDir,
+  stdio: "inherit",
+});
 
 console.log("[build-exe] 4/5 copying the Node runtime");
-mkdirSync(dirname(outFile), { recursive: true });
 copyFileSync(process.execPath, outFile);
 
 console.log("[build-exe] 5/5 injecting the blob with postject");
-run("npx", [
-  "--yes",
-  "postject",
-  outFile,
-  "NODE_SEA_BLOB",
-  join(work, "sea-prep.blob"),
-  "--sentinel-fuse",
-  FUSE,
-]);
+const shim = join(work, "postject.cmd");
+writeFileSync(
+  shim,
+  [
+    "@echo off",
+    [
+      "npx --yes postject",
+      '"' + outFile + '"',
+      "NODE_SEA_BLOB",
+      '"' + join(work, "sea-prep.blob") + '"',
+      "--sentinel-fuse",
+      FUSE,
+    ].join(" "),
+    "",
+  ].join("\r\n"),
+);
+execFileSync("cmd.exe", ["/d", "/c", shim], { cwd: outDir, stdio: "inherit" });
 
-console.log(`[build-exe] done -> ${outFile}`);
+if (!existsSync(outFile)) {
+  process.stderr.write("[build-exe] postject did not produce " + outFile + "\n");
+  process.exit(1);
+}
+console.log("[build-exe] done -> " + outFile);
